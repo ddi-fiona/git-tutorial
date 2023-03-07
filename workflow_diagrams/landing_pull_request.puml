@@ -1,0 +1,29 @@
+@startuml developer land a pull request
+
+partition GitHub #LightGreen{
+  partition FF-123 #LightSeaGreen{
+
+    "Checkout Feature Branch" --> "Merge Develop into FF-123"
+    "Merge Develop into FF-123" --> "Resolve any merge conflicts"
+    "Resolve any merge conflicts" --> "Revise and Update Code"
+  }
+
+  partition develop #LightBlue{
+    "Revise and Update Code" --> "Merge Feature into Develop"
+    (*) --> "Another Branch Lands"
+    "Another Branch Lands" -down-> "Develop is Ahead"
+    if "Same files modified" then
+      ->[true] "Update Branch"
+      "Update Branch" -down-> "Checkout Develop"
+      "Checkout Develop" -down-> "Fetch and Pull"
+      "Fetch and Pull" ---> "Checkout Feature Branch"
+    else
+      ->[false] "Automatic Merge"
+      "Automatic Merge" --> "Merge Feature into Develop"
+    endif
+    "Merge Feature into Develop" --> "Development Complete"
+    "Development Complete" -down-> (*)
+
+  }
+}
+@enduml

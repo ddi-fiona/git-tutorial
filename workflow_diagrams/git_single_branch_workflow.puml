@@ -1,0 +1,79 @@
+
+@startuml developer git workflow
+
+partition Jira #LightYellow {
+  (*) -down-> "Create Task"
+  -down-> "Task in Progress"
+  -down-> "Development Complete"
+  -down-> "Link to Test Cases"
+}
+
+partition GitHub #LightGreen{
+  partition develop #LightBlue{
+    "Task in Progress" -down-> "Branch off Develop"
+    "Merge Feature into Develop" --> "Development Complete"
+  }
+
+  partition FF-123 #LightSeaGreen{
+    "Branch off Develop" --> "Push the buttons"
+    "Push the buttons" --> "Draft Pull Request"
+    "Draft Pull Request" --> "Open Pull Request"
+
+    "Push the buttons" --> "Open Pull Request"
+
+    if "PR Approved" then
+      ->[true] "Merge Feature into Develop"
+    else
+      ->[false] "Push the buttons"
+    endif
+
+    "Merge Feature into Develop" --> "Delete Branch"
+  }
+}
+
+
+
+partition GitHub #LightGreen{
+  partition develop #LightBlue{
+    "Task in Progress" -down-> "Branch off Develop"
+    "Merge Feature into Develop" --> "Development Complete"
+  }
+
+  partition FF-123 #LightSeaGreen{
+    "Branch off Develop" --> "Push the buttons"
+    "Push the buttons" --> "Draft Pull Request"
+    "Draft Pull Request" --> "Open Pull Request"
+
+    if "New Branch for same Feature" then
+      -down->[true] "Branch off FF-123"
+    else
+      -down->[false] "Branch off Develop"
+
+
+    "Push the buttons" --> "Open Pull Request"
+
+    if "PR Approved" then
+      ->[true] "Merge Feature into Develop"
+    else
+      ->[false] "Push the buttons"
+    endif
+
+    "Merge Feature into Develop" --> "Delete Branch"
+  }
+
+  partition FF-321 #LightSteelBlue {
+    "Branch off FF-123" --> "Push more buttons"
+
+    "Push more buttons" --> "Draft PR"
+    if "FF-123 PR Landed" then
+      ->[true] "Open PR"
+    else
+      ->[false] "Push the buttons"
+    endif
+
+    "Delete Branch" -> "Merge Develop"
+
+  }
+}
+
+@enduml

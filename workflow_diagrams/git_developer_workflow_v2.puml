@@ -1,0 +1,42 @@
+@startuml developer git workflow
+
+start
+    partition Jira #LightYellow{
+      :New Task FF-123;
+    }
+    partition develop #LightBlue{
+      :Branch off Develop;
+
+      partition FF-123 #LightSeaGreen{
+        :Push the buttons;
+          if(Need Feedback?) is(yes) then
+            :Open Draft Pull Request;
+            repeat :Receive Feedback;
+              backward:Revise and Update Code;
+            repeat while (Development complete?) is (work in\nprogress) not (done!)
+          endif
+          :Open Pull Request;
+          if(Pull Request Approved?) then (changes requested)
+            repeat :Update based on feedback;
+            repeat while (Changes requested) is (true) not (false)
+          endif
+
+      }
+        if(Branch is up to date with develop?) is (false) then
+          :Checkout develop;
+          :Pull develop;
+          partition FF-123 #LightSeaGreen{
+            :Checkout FF-123;
+            :Merge develop into FF-123;
+            :Resolve any merge conflicts;
+          }
+        endif
+
+        :Merge FF-123 into develop;
+
+        :Delete FF-123;
+    }
+end
+
+
+@enduml
